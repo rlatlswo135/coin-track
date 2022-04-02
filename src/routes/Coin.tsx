@@ -148,7 +148,6 @@ const Coin = () => {
     const priceMatch = useRouteMatch("/:coinId/price")
     const chartMatch = useRouteMatch("/:coinId/chart")
     // 첫번째인자가 고유key이니 구분위해 저렇게넣어준거같은데.. 글쎄?
-    console.log(state)
     const {isLoading:priceLoading,data:priceData} = useQuery<PriceData>(`price-${coinId}`,()=>fetchCoinPrice(coinId))
     let divi = String(priceData?.quotes.USD.percent_change_15m).includes('-')
     return (
