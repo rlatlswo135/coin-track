@@ -7,7 +7,7 @@ import {ThemeProvider} from 'styled-components'
 import {darkTheme} from './theme'
 import {QueryClientProvider,QueryClient} from 'react-query'
 
-const queryClient = new QueryClient()
+export const queryClient = new QueryClient()
 ReactDOM.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>

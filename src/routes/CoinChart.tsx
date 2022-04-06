@@ -32,14 +32,6 @@ interface ISeries {
 }
 const CoinChart = (props:ChartProps) => {
     const {isLoading,data} = useQuery<IHistoryData[]>(`ohlcv-${props.coinId}`,()=>fetchCoinHistory(props.coinId))
-    // let series:ISeries[] = [{
-    //     data: [
-    //         //time , 시가 고가 저가 종가(open high low close)
-    //       [1538856000000, [6593.34, 6600, 6582.63, 6600]], 
-    //       [1538856900000, [6595.16, 6604.76, 6590.73, 6593.86]]
-    //     ]
-    //   }]
-    
     let series:ISeries[] = [{
         data:[]
     }]

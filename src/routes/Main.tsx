@@ -24,15 +24,6 @@ const VideoWrap = styled.div`
     width:100%;
     height:100%;
     video{
-    /* position: absolute;
-    right: 0;
-    bottom: 0;
-    min-width: 100%;
-    min-height: 100%;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    z-index: -100; */
     min-width:100%;
     object-fit: contain;
     }
@@ -47,16 +38,6 @@ const MtContent = styled.div`
         font-size:8em;
         margin-bottom: 15%;
     }
-    span{
-        padding-left:3%;
-        font-size:2.2em;
-        transition: all 0.3s;
-        &:hover{
-            cursor: pointer;
-            text-decoration: underline;
-            color:gray;
-        }
-    }
 `
 
 const Main = () => {
@@ -64,7 +45,6 @@ const Main = () => {
         <Container>
             <MtContent>
                 <h2>Coin Trackker</h2>
-                <span>Show More</span>
             </MtContent>
             {/* flex로 나누지말고 배경위에 띄우자 (position으로) */}
             <MainTop>

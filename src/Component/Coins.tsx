@@ -4,10 +4,11 @@ import { ReactElement } from 'react';
 import styled from 'styled-components';
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
-import { useQuery } from 'react-query';
+import { useQuery,QueryClient } from 'react-query';
 import { fetchCoins,fetchCoinPrice } from '../api';
 import {PriceData} from '../routes/Coin'
 import LoadPage from '../Component/LoadPage'
+import {queryClient} from '../index'
 
 interface ICoins {
     id:string,
@@ -26,7 +27,7 @@ interface Iprops{
 const Container=styled.div`
     width:100%;
     height:100%;
-    padding:5% 2%;
+    padding:0% 2%;
 `
 const Img=styled.img`
     width:25px;
@@ -70,7 +71,10 @@ const CoinRight = styled.div`
 `
 
 function Coins(props:Iprops){
-    const {isLoading,data} = useQuery<PriceData[]>('allCoins', fetchCoins)
+    const {isLoading,data} = useQuery<PriceData[]>('mainPage', fetchCoins,{
+        refetchInterval:4500,
+        refetchIntervalInBackground:true,
+    })
 /*
 useEffect시 fetch로 data받아오고, state에 set하고 isLoading도 별도의 state로 관리하던 코드가
 react-query 라이브러리를 이용하니 깔끔해졌다. => 자체적으로 isLoading이라는 데이터까지 return함
@@ -89,7 +93,10 @@ redux에 provider처럼 감싸고, 만든 client를 넘겨주고, useQuery라는
                 <Row>
                     {/* 코인을 너무많이받아와서 일단 slice해서 100개만 해놓는데 페이징해서 100개씩 해볼까? */}
                     {data?.slice(0,props.slice).map(coin => {
-                        let divi = String(coin.quotes.USD.percent_change_15m).includes('-')
+                        let color = String(coin.quotes.USD.percent_change_15m).includes('-') ? '#2E8BC0' : '#FF6B6B'
+                        if(coin.quotes.USD.percent_change_15m === 0){
+                            color='white'
+                        }
                         return(
                         <Col xl={3} lg={6} key={coin.id}>
                             <Coin>
@@ -104,9 +111,9 @@ redux에 provider처럼 감싸고, 만든 client를 넘겨주고, useQuery라는
                                         }
                                     }}>{coin.name}</Link>
                                 </CoinLeft>
-                                <CoinRight color={divi?'#2E8BC0':'#FF6B6B'}>
+                                <CoinRight color={color}>
                                     <div>{`${coin.quotes.USD.price.toFixed(2)} USD`}</div>
-                                    <div>{`${coin.quotes.USD.percent_change_15m}%`}</div>
+                                    <div>{` ' ${coin.quotes.USD.percent_change_15m}%`}</div>
                                 </CoinRight>
                             </Coin>
                         </Col>

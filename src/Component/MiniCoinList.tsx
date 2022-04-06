@@ -1,12 +1,15 @@
 import React,{useState} from 'react';
 import {PriceData} from '../routes/Coin'
 import styled from 'styled-components'
-import { underline } from 'colors';
 import {Link} from 'react-router-dom'
+import {fetchCoins} from '../api'
+import {useQuery} from 'react-query'
+import { useEffect } from 'react';
+
 
 interface IProps{
-    coinList:PriceData[],
-    current:string
+    current:string,
+    sliceNum:any
 }
 
 const List = styled.div<{active:string}>`
@@ -57,7 +60,6 @@ const Page = styled.div`
         padding:0;
         list-style:none;
     }
-    border:1px solid green;
 `
 
 const PageList = styled.li`
@@ -71,14 +73,16 @@ const PageList = styled.li`
         color:${props => props.theme.accentColor}
     }
 `
-const LinkStyle = styled(Link)`
-    text-decoration: 'none';
-`
+
 const MiniCoinList = (props:IProps) => {
+    const {isLoading,data:coinsData} = useQuery<PriceData[]>('allPrice',fetchCoins,{
+        refetchInterval:1000,
+        refetchIntervalInBackground:true,
+    })
     const pagingUnit = 17
+    const [currentPage , setCurrentPage] = useState(1)
     const [sliceNum,setSliceNum] = useState(0)
     const [pageList , setPageList] = useState([1,2,3,4,5])
-    const {coinList} = props
     function pageFun(eve:React.MouseEvent<HTMLLIElement>){
         //ts문제란다 eve.target을 HTML엘리먼트로 캐스팅해서쓴다는데;
         const casting = eve.target as HTMLElement
@@ -97,20 +101,24 @@ const MiniCoinList = (props:IProps) => {
         }else{
             let pageNum = Number(casting.innerText) -1
             setSliceNum(pageNum*pagingUnit)
+            setCurrentPage(pageNum + 1)
         }
     }
-
+    
     return (
         <div>
-            {coinList.slice(sliceNum,sliceNum+pagingUnit).map(coin => {
-            let divi = String(coin.quotes.USD.percent_change_15m).includes('-')
+            {coinsData?.slice(sliceNum,sliceNum+pagingUnit).map(coin => {
+            let color = String(coin?.quotes.USD.percent_change_15m).includes('-') ? '#2E8BC0' : '#FF6B6B'
+            if(coin?.quotes.USD.percent_change_15m === 0){
+                color='white'
+            }
                 return(
                     <Link to={{
                         pathname:`/${coin.id}/chart`,
                         state:{
                             name:coin.name,
                             img:`https://raw.githubusercontent.com/ErikThiart/cryptocurrency-icons/master/16/${coin.name.toLowerCase().split(" ").join("-")}.png`,
-                            alldata:coinList
+                            sliceNum
                         },
                     }} style={{ textDecoration: 'none'}}>
                     <List active={coin.name === props.current ? 'true' : 'false'}>
@@ -119,8 +127,8 @@ const MiniCoinList = (props:IProps) => {
                             <Name>{coin.name}</Name>
                         </Title>
                         <Content>
-                            <Price color={divi?`#2E8BC0`:'#FF6B6B'}>{coin.quotes.USD.price.toFixed(2)}<span>USD</span></Price>
-                            <Price color={divi?`#2E8BC0`:'#FF6B6B'}>{coin.quotes.USD.percent_change_15m.toFixed(2)}%</Price>
+                            <Price color={color}>{coin.quotes.USD.price.toFixed(2)}<span>USD</span></Price>
+                            <Price color={color}>{coin.quotes.USD.percent_change_15m.toFixed(2)}%</Price>
                         </Content>
                     </List>
                     </Link>
@@ -144,8 +152,3 @@ const MiniCoinList = (props:IProps) => {
 
 export default MiniCoinList;
 
-// divi?`#2E8BC0`:'#FF6B6B'
-
-//이름 현재가격 플러스마이너스
-
-// `https://raw.githubusercontent.com/ErikThiart/cryptocurrency-icons/master/16/${coin.name.toLowerCase().split(" ").join("-")}.png`

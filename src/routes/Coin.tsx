@@ -1,10 +1,9 @@
 import React, { useEffect,useState } from 'react';
 import {useHistory,useParams,useLocation,Switch,Route,Link,useRouteMatch} from 'react-router-dom'
-import Price from '../routes/Price'
 import CoinChart from '../routes/CoinChart'
-import {useQuery} from 'react-query'
+import {useQuery,QueryClient} from 'react-query'
 import MiniCoinList from '../Component/MiniCoinList'
-import { fetchCoinInfo, fetchCoinPrice } from '../api';
+import { fetchCoinInfo, fetchCoinPrice,fetchCoins } from '../api';
 import styled from 'styled-components'
 import LoadPage from '../Component/LoadPage'
 
@@ -68,7 +67,8 @@ export interface PriceData{
 interface LinkState{
     name:string,
     img:string,
-    alldata:PriceData[]
+    alldata:PriceData[],
+    sliceNum?:number
 }
 interface IColorData{
     color:string
@@ -142,14 +142,19 @@ const RightTitle  = styled.h1`
     letter-spacing: 5px;
 `
 const Coin = () => {
+    //쿼리가 페이지가 바뀌니까 업데이트가 안된다 => 다시
     let history = useHistory()
     const {state} = useLocation<LinkState>()
     const {coinId} = useParams<RouteParams>();
-    const priceMatch = useRouteMatch("/:coinId/price")
-    const chartMatch = useRouteMatch("/:coinId/chart")
     // 첫번째인자가 고유key이니 구분위해 저렇게넣어준거같은데.. 글쎄?
-    const {isLoading:priceLoading,data:priceData} = useQuery<PriceData>(`price-${coinId}`,()=>fetchCoinPrice(coinId))
-    let divi = String(priceData?.quotes.USD.percent_change_15m).includes('-')
+    const {isLoading:priceLoading,data:priceData} = useQuery<PriceData>(`price-${coinId}`,()=>fetchCoinPrice(coinId),{
+        refetchInterval:1000,
+        refetchIntervalInBackground:true,
+    })
+    let color = String(priceData?.quotes.USD.percent_change_15m).includes('-') ? '#2E8BC0' : '#FF6B6B'
+    if(priceData?.quotes.USD.percent_change_15m === 0){
+        color='white'
+    }
     return (
         <div>
             {
@@ -167,7 +172,7 @@ const Coin = () => {
                             <img src={state.img}></img>
                             <span>{state.name}</span>
                         </LeftTitle>
-                        <LeftPrice color={divi?`#2E8BC0`:'#FF6B6B'}>
+                        <LeftPrice color={color}>
                             <h2>{`${priceData?.quotes.USD.price.toFixed(2)} `}
                                 <span>USD</span>
                             </h2>
@@ -179,7 +184,7 @@ const Coin = () => {
                     </ContentLeft>
                     <ContentRight>
                         <RightTitle>Coin List</RightTitle>
-                        <MiniCoinList coinList={state.alldata} current={state.name}></MiniCoinList>
+                        <MiniCoinList current={state.name} sliceNum={state.sliceNum?state.sliceNum:null}></MiniCoinList>
                     </ContentRight>
                 </Container>
                 <Switch>
