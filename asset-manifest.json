@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/coin-track/index.html/static/css/main.073c9b0a.css",
-    "main.js": "/coin-track/index.html/static/js/main.20d84719.js",
-    "static/js/787.57dd0546.chunk.js": "/coin-track/index.html/static/js/787.57dd0546.chunk.js",
-    "index.html": "/coin-track/index.html/index.html",
-    "main.073c9b0a.css.map": "/coin-track/index.html/static/css/main.073c9b0a.css.map",
-    "main.20d84719.js.map": "/coin-track/index.html/static/js/main.20d84719.js.map",
-    "787.57dd0546.chunk.js.map": "/coin-track/index.html/static/js/787.57dd0546.chunk.js.map"
+    "main.css": "/coin-track/static/css/main.073c9b0a.css",
+    "main.js": "/coin-track/static/js/main.20bb9d00.js",
+    "static/js/787.57dd0546.chunk.js": "/coin-track/static/js/787.57dd0546.chunk.js",
+    "index.html": "/coin-track/index.html",
+    "main.073c9b0a.css.map": "/coin-track/static/css/main.073c9b0a.css.map",
+    "main.20bb9d00.js.map": "/coin-track/static/js/main.20bb9d00.js.map",
+    "787.57dd0546.chunk.js.map": "/coin-track/static/js/787.57dd0546.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.20d84719.js"
+    "static/js/main.20bb9d00.js"
   ]
 }
